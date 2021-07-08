@@ -1,3 +1,5 @@
+`include "mainfsm.v"
+
 module decode (
 	clk,
 	reset,
