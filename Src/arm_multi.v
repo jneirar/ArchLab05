@@ -72,7 +72,7 @@
 `include "arm.v"
 `include "mem.v"
 
-module top (
+module arm_multi (
 	clk,
 	reset,
 	WriteData,
