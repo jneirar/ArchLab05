@@ -19,7 +19,6 @@ module controller_tb;
 	
 	reg [31:0] RAM [63:0];
 	reg [31:0] i;
-	reg [31:0] contSTR;
 
 	controller ctrl(
 		.clk(clk),
@@ -40,60 +39,78 @@ module controller_tb;
 	);
 	
 	always begin
-		clk <= 1;
-		#(1);
 		clk <= 0;
+		#(1);
+		clk <= 1;
 		#(1);
 	end
 
 	initial begin
-		reset <= 1;
-		Instr <= 20'hE04F0;
-		#20
-		reset <= 0;
+		$readmemh("memfile.asm",RAM);
+		i = 0;
+		ALUFlags = 4'b0100;
+		reset = 1; #2; reset = 0;
+	end
+
+	always @(posedge clk) begin
+		if (~reset & IRWrite) begin
+			if (RAM[i] === 0)
+				$finish;
+			Instr = RAM[i][31:12];
+			i = i + 1;
+		end
+	end
+
+/*
+	initial begin
+		reset = 1;
+		ALUFlags <= 4'b0000;
+		Instr = 20'hE04F0;
+		#10
+		reset = 0;
 		#8
-		Instr <= 20'hE2801;
+		Instr = 20'hE2801;
 		#8
-		Instr <= 20'hE2412;
+		Instr = 20'hE2412;
 		#8
-		Instr <= 20'hE0013;
+		Instr = 20'hE0013;
 		#8
-		Instr <= 20'hE1834;
+		Instr = 20'hE1834;
 		#8
-		Instr <= 20'hE0813;
+		Instr = 20'hE0813;
 		#8
-		Instr <= 20'hE2034;
+		Instr = 20'hE2034;
 		#8
-		Instr <= 20'hE3843;
+		Instr = 20'hE3843;
 		#8
-		Instr <= 20'hE0511;
+		Instr = 20'hE0511;
 		#8
-		Instr <= 20'h0A000;
+		Instr = 20'h0A000;
 		#8
-		Instr <= 20'hE1821;
+		Instr = 20'hE1821;
 		#8
-		Instr <= 20'hE2811;
+		Instr = 20'hE2811;
 		#8
-		Instr <= 20'hE5812;
+		Instr = 20'hE5812;
 		#8
-		Instr <= 20'hE2825;
+		Instr = 20'hE2825;
 		#8
-		Instr <= 20'hE5953;
+		Instr = 20'hE5953;
 		#8
-		Instr <= 20'hE0522;
+		Instr = 20'hE0522;
 		#8
-		Instr <= 20'hBAFFF;
+		Instr = 20'hBAFFF;
 		#8
-		Instr <= 20'hEA000;
+		Instr = 20'hEA000;
 		#8
-		Instr <= 20'hE0021;
+		Instr = 20'hE0021;
 		#8
-		Instr <= 20'hE5804;
+		Instr = 20'hE5804;
 		$display("Simulation succeeded");
 		#20;
 		$finish;
 	end
-
+*/
     initial begin
         $dumpfile("controller.vcd");
         $dumpvars;
